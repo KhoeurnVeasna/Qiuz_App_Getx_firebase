@@ -1,0 +1,49 @@
+import 'package:flutter/material.dart';
+import 'package:quiz_project/screens/introdutionpage/introduction.dart';
+import 'package:quiz_project/screens/login_page.dart';
+import 'package:quiz_project/screens/main_page.dart';
+
+import '../screens/auth_state.dart';
+import '../screens/forgotpassword_page.dart';
+import '../screens/home_page.dart';
+import '../screens/register_page.dart';
+
+class Routes {
+  static const loginPage = '/loginPage';
+  static const homePage = '/homePage';
+  static const authState = '/authState';
+  static const introductionPage = '/introductionPage';
+  static const registerPage = '/registerPage';
+  static const mainPage = '/mainPage';
+  static const forgotPasswordPage = '/forgotPasswordPage';
+
+  static Route<dynamic> generateRoute (RouteSettings settings){
+    switch (settings.name) {
+      case loginPage:
+        return MaterialPageRoute(builder: (_)=> LoginPage());
+      case homePage:
+        return MaterialPageRoute(builder: (_)=> HomePage());
+      case authState:
+        return MaterialPageRoute(builder: (_)=> AuthState());
+      case introductionPage:
+        return MaterialPageRoute(builder: (_)=> IntroductionPage());
+      case registerPage:
+        return MaterialPageRoute(builder: (_)=> RegisterPage());
+      case mainPage:
+        return MaterialPageRoute(builder: (_)=> MainPage());
+      case forgotPasswordPage:
+        return MaterialPageRoute(builder: (_)=> ForgotpasswordPage());  
+      default:
+        return _errorRoutes(); 
+    }
+
+  }
+  static Route<dynamic> _errorRoutes(){
+    return MaterialPageRoute(builder: (_)=> 
+    Scaffold(
+      body: Center(
+        child: Text('No Page to Route'),
+      ),
+    ));
+  }
+}
