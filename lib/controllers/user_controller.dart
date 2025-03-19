@@ -51,9 +51,8 @@ class UserController extends GetxController {
       } else {
         log('Retrieved ${allUsers.length} users.');
       }
-
+      allUsers.sort((a, b) => b.score.compareTo(a.score));
       _users.assignAll(allUsers);
-      update();
     } catch (e) {
       log(' Error fetching all users in Controller: $e');
     }

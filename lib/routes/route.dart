@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:quiz_project/screens/introdutionpage/introduction.dart';
-import 'package:quiz_project/screens/login_page.dart';
-import 'package:quiz_project/screens/main_page.dart';
 
-import '../screens/auth_state.dart';
-import '../screens/forgotpassword_page.dart';
-import '../screens/home_page.dart';
-import '../screens/register_page.dart';
+import 'package:flutter/material.dart';
+import 'package:quiz_project/pages/auth_state.dart' show AuthState;
+import 'package:quiz_project/pages/forgotpassword_page.dart' show ForgotpasswordPage;
+import 'package:quiz_project/pages/home_page.dart' show HomePage;
+import 'package:quiz_project/pages/introdutionpage/introduction.dart' show IntroductionPage;
+import 'package:quiz_project/pages/login_page.dart' show LoginPage;
+import 'package:quiz_project/pages/main_page.dart' show MainPage;
+import 'package:quiz_project/pages/register_page.dart' show RegisterPage;
 
 class Routes {
   static const loginPage = '/loginPage';

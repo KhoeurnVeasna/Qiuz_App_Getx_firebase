@@ -9,8 +9,8 @@ import 'package:quiz_project/controllers/user_controller.dart';
 import 'package:quiz_project/routes/route.dart';
 import 'package:quiz_project/services/servies_storage/service_storage.dart';
 import 'firebase_options.dart';
-import 'screens/auth_state.dart';
-import 'screens/introdutionpage/introduction.dart';
+import 'pages/auth_state.dart';
+import 'pages/introdutionpage/introduction.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

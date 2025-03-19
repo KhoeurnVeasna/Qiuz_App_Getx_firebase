@@ -15,7 +15,6 @@ class UserModel {
       required this.avatar,
       required this.dateOfBirth,
       this.score = 0});
-  ////haaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
       id: map['uid'] ?? '',
@@ -50,5 +49,28 @@ class UserModel {
       'dateOfBirth': dateOfBirth,
       'score': score
     };
+  }
+
+   @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! UserModel) return false;
+    
+    return other.id == id &&
+        other.username == username &&
+        other.email == email &&
+        other.avatar == avatar &&
+        other.dateOfBirth == dateOfBirth &&
+        other.score == score;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        username.hashCode ^
+        email.hashCode ^
+        avatar.hashCode ^
+        dateOfBirth.hashCode ^
+        score.hashCode;
   }
 }

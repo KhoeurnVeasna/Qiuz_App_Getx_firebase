@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quiz_project/controllers/question_controller.dart';
-import 'package:quiz_project/screens/main_page.dart';
 import 'package:quiz_project/utils/fonts.dart';
 import 'package:quiz_project/widgets/button_submit_widget.dart';
 
 import '../theme/colors.dart';
+import 'main_page.dart';
 
 class ResultPage extends StatelessWidget {
   const ResultPage({super.key});

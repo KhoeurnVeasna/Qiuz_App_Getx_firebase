@@ -1,7 +1,8 @@
 import 'package:dot_navigation_bar/dot_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:quiz_project/screens/leaderboard_page.dart';
-import 'package:quiz_project/screens/user_page.dart';
+import 'package:quiz_project/pages/leaderboard_page.dart' show LeaderboardPage;
+import 'package:quiz_project/pages/user_page.dart' show UserPage;
+
 import '../theme/colors.dart';
 import 'home_page.dart';
 

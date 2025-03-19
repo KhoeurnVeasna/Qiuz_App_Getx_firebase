@@ -2,12 +2,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quiz_project/controllers/user_controller.dart';
-import 'package:quiz_project/screens/result_page.dart';
 import 'package:quiz_project/services/firebase_question.dart';
 import 'package:quiz_project/theme/colors.dart';
 import 'package:quiz_project/utils/fonts.dart';
 import 'package:quiz_project/widgets/button_submit_widget.dart';
 import '../model/question.dart';
+import '../pages/result_page.dart';
 
 class QuestionController extends GetxController {
   final questions = <Question>[].obs;

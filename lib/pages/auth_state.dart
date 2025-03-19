@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quiz_project/controllers/auth_state_controller.dart';
-import 'package:quiz_project/screens/main_page.dart';
+import 'package:quiz_project/pages/main_page.dart' show MainPage;
 
 import 'login_page.dart';
 
