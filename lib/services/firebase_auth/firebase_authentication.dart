@@ -99,6 +99,40 @@ class FirebaseAuthentication {
       return [];
     }
   }
+  Future<bool> addScore(int score) async {
+  try {
+    final user = _auth.currentUser;
+    if (user == null) {
+      debugPrint('No authenticated user');
+      return false;
+    }
+
+    final userDocRef = _firestore.collection('users').doc(user.uid);
+
+    await _firestore.runTransaction((transaction) async {
+      final userDoc = await transaction.get(userDocRef);
+
+      if (userDoc.exists) {
+        final currentScore = userDoc.data()?['score'] ?? 0;
+        final newScore = currentScore + score;
+        transaction.update(userDocRef, {'score': newScore});
+        log('User score updated to: $newScore');
+      } else {
+        transaction.set(userDocRef, {'score': score});
+        log(' User document created with score: $score');
+      }
+    });
+
+    return true; // Successfully added score
+  } on FirebaseException catch (e) {
+    debugPrint('Firebase error: ${e.message}');
+    return false;
+  } catch (e) {
+    debugPrint('Unexpected error: $e');
+    return false;
+  }
+}
+
 
   Future<void> forgotPassword(BuildContext context, String email) async {
     try {

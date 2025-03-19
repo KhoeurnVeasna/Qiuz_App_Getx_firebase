@@ -7,8 +7,9 @@ class UserController extends GetxController {
   final Rx<UserModel?> _currentUser = Rx<UserModel?>(null);
   UserModel? get currentUser => _currentUser.value;
   final _users = <UserModel>[].obs;
-  final FirebaseAuthentication _firebaseAuthentication = FirebaseAuthentication();
-   List<UserModel> get users => _users; 
+  final FirebaseAuthentication _firebaseAuthentication =
+      FirebaseAuthentication();
+  List<UserModel> get users => _users;
   @override
   void onInit() {
     super.onInit();
@@ -27,21 +28,34 @@ class UserController extends GetxController {
       log('Error fetching current user: $e');
     }
   }
-  Future<void> fetchAllUser() async {
-  try {
-    final allUsers = await _firebaseAuthentication.fetchAllUser();
 
-    if (allUsers.isEmpty) {
-      log('⚠️ No users retrieved.');
-    } else {
-      log('✅ Retrieved ${allUsers.length} users.');
+  Future<void> addScoretoDB(int score) async {
+    try {
+      final bool success = await _firebaseAuthentication.addScore(score);
+      if (success) {
+        log('Score added successfully.');
+      } else {
+        log('Failed to add score.');
+      }
+    } catch (e) {
+      log('Error adding score to DB: $e');
     }
-
-    _users.assignAll(allUsers); // Update observable list
-    update(); // Notify UI of the change
-  } catch (e) {
-    log('❌ Error fetching all users in Controller: $e');
   }
-}
 
+  Future<void> fetchAllUser() async {
+    try {
+      final allUsers = await _firebaseAuthentication.fetchAllUser();
+
+      if (allUsers.isEmpty) {
+        log('No users retrieved.');
+      } else {
+        log('Retrieved ${allUsers.length} users.');
+      }
+
+      _users.assignAll(allUsers);
+      update();
+    } catch (e) {
+      log(' Error fetching all users in Controller: $e');
+    }
+  }
 }

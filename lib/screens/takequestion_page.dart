@@ -71,7 +71,7 @@ class _TakequestionPageState extends State<TakequestionPage> {
             children: [
               Text('Score', style: AppFonts.subTitleFont),
               Obx(() {
-                return Text(' ${questionController.totalScore.value}');
+                return Text(questionController.scorePerMatch.value.toString());
               })
             ],
           ),

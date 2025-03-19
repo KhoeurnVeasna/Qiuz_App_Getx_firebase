@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:quiz_project/screens/leaderboard_page.dart';
 import 'package:quiz_project/screens/user_page.dart';
 import '../theme/colors.dart';
-import 'admin/add_quiz_page.dart';
 import 'home_page.dart';
 
 class MainPage extends StatefulWidget {

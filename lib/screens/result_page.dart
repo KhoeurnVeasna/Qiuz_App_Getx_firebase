@@ -45,7 +45,7 @@ class ResultPage extends StatelessWidget {
                 ),
                 Obx(() {
                   return Text(
-                    '${questionController.totalScore.value} : Score',
+                    '${questionController.scorePerMatch.value} : Score',
                     style: AppFonts.mainTitleBule,
                   );
                 }),
@@ -57,6 +57,7 @@ class ResultPage extends StatelessWidget {
                   height:50,
                   child: ButtonSubmitWidget(
                     onPressed: () {
+                      questionController. resetQuestion(); 
                       Get.to(MainPage());
                     },
                     text: 'Finish',

@@ -20,5 +20,11 @@ class AppFonts {
     fontSize: 35,
      color: Colors.blue[300]
   ) ;
+  static var userText = GoogleFonts.koulen(
+     fontSize: 20,
+     color: Colors.white
+  )
+  ;
+  
   
 }

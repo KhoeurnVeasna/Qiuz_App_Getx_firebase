@@ -1,0 +1,2 @@
+C:/Users/Veasna/.vscode/quiz_project/android/app/.cxx/Debug/294s516n/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/Veasna/.vscode/quiz_project/android/app/.cxx/Debug/294s516n/armeabi-v7a/CMakeFiles/rebuild_cache.dir

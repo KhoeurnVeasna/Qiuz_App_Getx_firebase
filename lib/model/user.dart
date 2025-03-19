@@ -15,7 +15,7 @@ class UserModel {
       required this.avatar,
       required this.dateOfBirth,
       this.score = 0});
-  ////haaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+  ////haaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
       id: map['uid'] ?? '',

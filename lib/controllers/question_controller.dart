@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:quiz_project/controllers/user_controller.dart';
 import 'package:quiz_project/screens/result_page.dart';
 import 'package:quiz_project/services/firebase_question.dart';
 import 'package:quiz_project/theme/colors.dart';
@@ -18,6 +19,7 @@ class QuestionController extends GetxController {
   final defaultColor = Colors.white.obs;
   final selectAnswerColor = <String, Color>{}.obs;
   final scorePerQuestion = 20.obs;
+  final scorePerMatch = 0.obs;
   final totalScore = 0.obs;
   final health = 3.obs;
   Question get question => questions[currentIndex.value];
@@ -25,7 +27,7 @@ class QuestionController extends GetxController {
   var timeleft = 10.obs;
   final isNavigating = false.obs;
   Timer? _time;
-  var isNewQuestion = false.obs; 
+  var isNewQuestion = false.obs;
 
   Future<void> fetchQuestionsOnce(String quizId) async {
     isLoading(true);
@@ -43,6 +45,13 @@ class QuestionController extends GetxController {
       });
     }
   }
+  // Future<void> addScore()async{
+  //   try {
+  //     final scoreAdd = await _firebaseQuestion
+  //   } catch (e) {
+
+  //   }
+  // }
 
   void startTime() {
     _time?.cancel();
@@ -76,7 +85,7 @@ class QuestionController extends GetxController {
     selectAnswerColor.clear();
     if (answer == correctAnswerText) {
       selectAnswerColor[correctAnswerText] = Colors.green;
-      totalScore.value += scorePerQuestion.value;
+      scoreCalanterPerMatch();
     } else {
       selectAnswerColor[answer] = Colors.red;
       selectAnswerColor[correctAnswerText] = Colors.green;
@@ -97,28 +106,31 @@ class QuestionController extends GetxController {
     });
   }
 
-  void gotoNextQuestion(BuildContext context) {
-  if (questions.isEmpty) return;
-
-  if (currentIndex.value < questions.length - 1) {
-    isNewQuestion.value = true; // Start animation
-    currentIndex.value++;
-
-    
-    selectAnswer.value = '';
-    defaultColor.value = Colors.white;
-    Future.delayed(const Duration(milliseconds: 300), () {
-      isNewQuestion.value = false;
-    });
-
-    startTime();
-  } else {
-    showDiologEnd(context);
-    _time?.cancel();
+  void scoreCalanterPerMatch() {
+    scorePerMatch.value += scorePerQuestion.value; 
   }
-  isNavigating.value = false;
-}
+  
 
+  void gotoNextQuestion(BuildContext context) {
+    if (questions.isEmpty) return;
+
+    if (currentIndex.value < questions.length - 1) {
+      isNewQuestion.value = true; // Start animation
+      currentIndex.value++;
+
+      selectAnswer.value = '';
+      defaultColor.value = Colors.white;
+      Future.delayed(const Duration(milliseconds: 300), () {
+        isNewQuestion.value = false;
+      });
+
+      startTime();
+    } else {
+      showDiologEnd(context);
+      _time?.cancel();
+    }
+    isNavigating.value = false;
+  }
 
   void addQuestion(String quizId, String questionText, List<dynamic> options,
       int correctAnswerIndex) async {
@@ -140,15 +152,21 @@ class QuestionController extends GetxController {
     defaultColor.value = Colors.white;
     timeleft.value = 30;
     health.value = 3;
+    totalScore.value = 0;
     isNavigating.value = false;
+    scorePerMatch.value= 0;
     isNewQuestion.value = true;
-    
+
     Future.delayed(Duration(milliseconds: 300), () {
       isNewQuestion.value = false;
     });
   }
 
   void showDiologEnd(BuildContext context) {
+    final UserController userController = Get.find();
+
+    totalScore.value += scorePerMatch.value; // ✅ Accumulate score correctly
+
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -193,14 +211,15 @@ class QuestionController extends GetxController {
                     width: double.infinity,
                     height: height * 0.05,
                     child: ButtonSubmitWidget(
-                      onPressed: () {
-                        resetQuestion();
+                      onPressed: () async {
+                        await userController.addScoretoDB(totalScore.value);
                         Get.offAll(ResultPage());
+                      
                       },
                       text: 'Finish',
                       color: AppColor.introBk,
                     ),
-                  )
+                  ),
                 ],
               ),
             );
