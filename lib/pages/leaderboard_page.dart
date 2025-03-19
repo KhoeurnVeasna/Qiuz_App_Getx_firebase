@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:quiz_project/controllers/question_controller.dart';
+
 import 'package:quiz_project/theme/colors.dart';
 import 'package:quiz_project/utils/fonts.dart';
 
@@ -16,7 +16,7 @@ class LeaderboardPage extends StatefulWidget {
 
 class _LeaderboardPageState extends State<LeaderboardPage> {
   final UserController _userController = Get.find();
-  final QuestionController _questionController = Get.find();
+  // final QuestionController _questionController = Get.find();
 
   @override
   void initState() {
