@@ -37,11 +37,11 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
         ),
         actions: [
           Padding(
-            padding: EdgeInsets.only(left: 20,right: 20),
+              padding: EdgeInsets.only(left: 20, right: 20),
               child: Text(
-            'Ponts ${_userController.currentUser?.score}',
-            style: AppFonts.userText,
-          )),
+                'Ponts ${_userController.currentUser?.score}',
+                style: AppFonts.userText,
+              )),
         ],
       ),
       body: Obx(() {
@@ -54,8 +54,10 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                   itemCount: _userController.users.length,
                   itemBuilder: (BuildContext ctx, index) {
                     return Card(
-                    
-                        color: _userController.users[index].id == FirebaseAuth.instance.currentUser?.uid ? Colors.green: AppColor.introBk,
+                        color: _userController.users[index].id ==
+                                FirebaseAuth.instance.currentUser?.uid
+                            ? Colors.green
+                            : AppColor.introBk,
                         semanticContainer: true,
                         clipBehavior: Clip.antiAliasWithSaveLayer,
                         shape: RoundedRectangleBorder(

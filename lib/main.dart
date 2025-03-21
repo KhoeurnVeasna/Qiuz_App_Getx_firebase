@@ -61,7 +61,6 @@ class _MyAppState extends State<MyApp> {
       ),
       onGenerateRoute: Routes.generateRoute,
       home: isComplate! ? const AuthState() : const IntroductionPage(),
-      
     );
   }
 }
