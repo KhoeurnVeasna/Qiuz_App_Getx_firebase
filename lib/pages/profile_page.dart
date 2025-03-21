@@ -1,19 +1,19 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quiz_project/controllers/user_controller.dart';
 import 'package:quiz_project/theme/colors.dart';
 import 'package:quiz_project/utils/fonts.dart';
+import 'package:quiz_project/widgets/button_submit_widget.dart';
 
 import '../services/firebase_auth/firebase_authentication.dart';
 
 class ProfilePage extends StatelessWidget {
-  ProfilePage({super.key});
-  final UserController _userController = Get.find();
+  const ProfilePage({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final username = _userController.currentUser?.username;
-
+    final UserController userController = Get.find();
+    final txtNewuser = TextEditingController();
     List<Map<String, dynamic>> itemsProfile = [
       {
         'icon': Icon(
@@ -49,74 +49,102 @@ class ProfilePage extends StatelessWidget {
           style: AppFonts.userText,
         ),
       ),
-      body: Column(
-        children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.05,
-          ),
-          Center(
-            child: CircleAvatar(
-                maxRadius: 60,
-                backgroundColor: AppColor.introBk,
-                child: Text(
-                  username!.substring(0, 2).toUpperCase(),
-                  style: AppFonts.userText,
-                )),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 20,
-              ),
-              Text(
-                username,
-                style: AppFonts.userText,
-              ),
-              IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  Icons.edit,
-                  color: AppColor.introBk,
+      body: Obx(
+        () => Column(
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.05,
+            ),
+            Center(
+              child: CircleAvatar(
+                  maxRadius: 60,
+                  backgroundColor: AppColor.introBk,
+                  child: Text(
+                    userController.username.substring(0, 1).toUpperCase(),
+                    style: AppFonts.userText,
+                  )),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 20,
                 ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.1,
-          ),
-          ListView.separated(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              separatorBuilder: (context, index) => Divider(
-                color: Color.fromARGB(171, 105, 105, 105),
-              ),
-              itemCount: itemsProfile.length,
-              itemBuilder: (ctx, index) {
-                return Padding(
-                  padding: EdgeInsets.only(left: 15),
-                  child: ListTile(
-                    onTap: ()async{
-                      if(index == itemsProfile.length-1){
-                       await FirebaseAuthentication().logout();
-                      }
-                    },
-                    leading: itemsProfile[index]['icon'],
-                    iconColor: Colors.white,
-                    title: Text(
-                      itemsProfile[index]['title'],
-                      style: AppFonts.userText,
-                    ),
+                Text(
+                  userController.username.value,
+                  style: AppFonts.userText,
+                ),
+                IconButton(
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (ctx) {
+                          return AlertDialog(
+                            title: Text(
+                              'Enter new UserName',
+                              style: AppFonts.titleBlue,
+                            ),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                TextField(
+                                  controller: txtNewuser,
+                                ),
+                                ButtonSubmitWidget(
+                                  onPressed: () {
+                                    userController
+                                        .changeUsername(txtNewuser.text.trim());
+
+                                    Navigator.pop(context);
+                                  },
+                                  text: 'Save',
+                                )
+                              ],
+                            ),
+                          );
+                        });
+                  },
+                  icon: Icon(
+                    Icons.edit,
+                    color: AppColor.introBk,
                   ),
-                );
-              })
-        ],
+                ),
+              ],
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.1,
+            ),
+            ListView.separated(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                separatorBuilder: (context, index) => Divider(
+                      color: Color.fromARGB(171, 105, 105, 105),
+                    ),
+                itemCount: itemsProfile.length,
+                itemBuilder: (ctx, index) {
+                  return Padding(
+                    padding: EdgeInsets.only(left: 15),
+                    child: ListTile(
+                      onTap: () async {
+                        if (index == itemsProfile.length - 1) {
+                          await FirebaseAuthentication().logout();
+                        }
+                      },
+                      leading: itemsProfile[index]['icon'],
+                      iconColor: Colors.white,
+                      title: Text(
+                        itemsProfile[index]['title'],
+                        style: AppFonts.userText,
+                      ),
+                    ),
+                  );
+                })
+          ],
+        ),
       ),
     );
   }
-
-  // theary subString(0,1)
 }

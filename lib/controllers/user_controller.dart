@@ -10,6 +10,18 @@ class UserController extends GetxController {
   final FirebaseAuthentication _firebaseAuthentication =
       FirebaseAuthentication();
   List<UserModel> get users => _users;
+
+  final username = ''.obs;
+
+  void changeUsername(String newUsername) async {
+    try {
+      await _firebaseAuthentication.changeUserName(newUsername);
+      username.value = newUsername;
+    } catch (e) {
+      log('error to change userName controller $e');
+    }
+  }
+
   @override
   void onInit() {
     super.onInit();
@@ -24,6 +36,7 @@ class UserController extends GetxController {
       } else {
         log('No user found in Firestore.');
       }
+      username.value = _currentUser.value!.username;
     } catch (e) {
       log('Error fetching current user: $e');
     }
