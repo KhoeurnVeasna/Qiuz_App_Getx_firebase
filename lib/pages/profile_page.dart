@@ -6,14 +6,15 @@ import 'package:quiz_project/utils/fonts.dart';
 import 'package:quiz_project/widgets/button_submit_widget.dart';
 
 import '../services/firebase_auth/firebase_authentication.dart';
+import '../widgets/text_field_widget.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
+  
 
   @override
   Widget build(BuildContext context) {
     final UserController userController = Get.find();
-    final txtNewuser = TextEditingController();
     List<Map<String, dynamic>> itemsProfile = [
       {
         'icon': Icon(
@@ -50,99 +51,135 @@ class ProfilePage extends StatelessWidget {
         ),
       ),
       body: Obx(
-        () => Column(
-          children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.05,
-            ),
-            Center(
-              child: CircleAvatar(
-                  maxRadius: 60,
-                  backgroundColor: AppColor.introBk,
-                  child: Text(
-                    userController.username.substring(0, 1).toUpperCase(),
+        () => SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.05,
+              ),
+              Center(
+                child: CircleAvatar(
+                    maxRadius: 60,
+                    backgroundColor: AppColor.introBk,
+                    child: Text(
+                      userController.username.substring(0,1).toLowerCase(),
+                      style: AppFonts.userText
+                    )),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Text(
+                    userController.username.value,
                     style: AppFonts.userText,
-                  )),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: 20,
-                ),
-                Text(
-                  userController.username.value,
-                  style: AppFonts.userText,
-                ),
-                IconButton(
-                  onPressed: () {
-                    showDialog(
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      showDialog(
                         context: context,
                         builder: (ctx) {
-                          return AlertDialog(
-                            title: Text(
-                              'Enter new UserName',
-                              style: AppFonts.titleBlue,
-                            ),
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                TextField(
-                                  controller: txtNewuser,
-                                ),
-                                ButtonSubmitWidget(
-                                  onPressed: () {
-                                    userController
-                                        .changeUsername(txtNewuser.text.trim());
+                          final GlobalKey<FormState> formKey =
+                              GlobalKey<FormState>();
+                          final TextEditingController txtNewuser =
+                              TextEditingController();
+                          final FocusNode txtNewName = FocusNode();
 
-                                    Navigator.pop(context);
-                                  },
-                                  text: 'Save',
-                                )
-                              ],
+                          return AlertDialog(
+                            title: Center(
+                              child: Text(
+                                'Enter new Username',
+                                style: AppFonts.titleBlue,
+                              ),
+                            ),
+                            content: Form(
+                              key: formKey,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  TextFieldWidget(
+                                    controller: txtNewuser,
+                                    focusNode: txtNewName,
+                                  ),
+                                  SizedBox(height: 10),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      ButtonSubmitWidget(onPressed: (){
+                                        Get.back();
+                                      },
+                                      color: Colors.red,
+                                      text: 'Cancal',),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      ButtonSubmitWidget(
+                                        onPressed: () {
+                                          if (formKey.currentState!.validate()) {
+                                            if (txtNewuser.text.isEmpty) {
+                                              FocusScope.of(context).requestFocus(txtNewName);
+                                            } else {
+                                              userController.changeUsername(
+                                                  txtNewuser.text.trim());
+                                              Get.back();
+                                              txtNewuser.clear();
+                                            }
+                                          }
+                                        },
+                                        color: Colors.green,
+                                        text: 'Save',
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           );
-                        });
-                  },
-                  icon: Icon(
-                    Icons.edit,
-                    color: AppColor.introBk,
+                        },
+                      );
+                    },
+                    icon: Icon(
+                      Icons.edit,
+                      color: AppColor.introBk,
+                    ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.1,
-            ),
-            ListView.separated(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                separatorBuilder: (context, index) => Divider(
-                      color: Color.fromARGB(171, 105, 105, 105),
-                    ),
-                itemCount: itemsProfile.length,
-                itemBuilder: (ctx, index) {
-                  return Padding(
-                    padding: EdgeInsets.only(left: 15),
-                    child: ListTile(
-                      onTap: () async {
-                        if (index == itemsProfile.length - 1) {
-                          await FirebaseAuthentication().logout();
-                        }
-                      },
-                      leading: itemsProfile[index]['icon'],
-                      iconColor: Colors.white,
-                      title: Text(
-                        itemsProfile[index]['title'],
-                        style: AppFonts.userText,
+                ],
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.1,
+              ),
+              ListView.separated(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  separatorBuilder: (context, index) => Divider(
+                        color: Color.fromARGB(171, 105, 105, 105),
                       ),
-                    ),
-                  );
-                })
-          ],
+                  itemCount: itemsProfile.length,
+                  itemBuilder: (ctx, index) {
+                    return Padding(
+                      padding: EdgeInsets.only(left: 15),
+                      child: ListTile(
+                        onTap: () async {
+                          if (index == itemsProfile.length - 1) {
+                            await FirebaseAuthentication().logout();
+                          }
+                        },
+                        leading: itemsProfile[index]['icon'],
+                        iconColor: Colors.white,
+                        title: Text(
+                          itemsProfile[index]['title'],
+                          style: AppFonts.userText,
+                        ),
+                      ),
+                    );
+                  })
+            ],
+          ),
         ),
       ),
     );

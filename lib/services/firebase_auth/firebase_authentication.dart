@@ -41,16 +41,25 @@ class FirebaseAuthentication {
       return false;
     }
   }
-  Future<void> changeUserName(String newUserName)async{
-    try {
-      await FirebaseFirestore.instance.collection('users').doc(_auth.currentUser!.uid).update({
-        'username': newUserName
-      });
-
-    } catch (e) {
-      log('error to change username $e');
+  Future<bool> changeUserName(String newUserName) async {
+  try {
+    final user = _auth.currentUser;
+    if (user == null) {
+      log('Error: No user is logged in');
+      return false;
     }
+
+    await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+      'username': newUserName,
+    });
+
+    log('Username successfully updated to: $newUserName');
+    return true;
+  } catch (e) {
+    log('Error changing username: $e');
+    return false;
   }
+}
 
   Future<void> logout() async {
     try {

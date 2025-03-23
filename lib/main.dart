@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:quiz_project/controllers/auth_state_controller.dart';
+import 'package:quiz_project/controllers/database_controller.dart';
 import 'package:quiz_project/controllers/question_controller.dart';
 import 'package:quiz_project/controllers/quiz_controller.dart';
 import 'package:quiz_project/controllers/user_controller.dart';
@@ -21,6 +22,7 @@ void main() async {
   Get.put(QuestionController());
   Get.put(AuthStateController());
   Get.put(UserController());
+  Get.put(DatabaseController());
   await GetStorage.init();
 
   runApp(MyApp());
