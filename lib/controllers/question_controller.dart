@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quiz_project/controllers/user_controller.dart';
@@ -28,6 +29,7 @@ class QuestionController extends GetxController {
   final isNavigating = false.obs;
   Timer? _time;
   var isNewQuestion = false.obs;
+  final auido = AudioPlayer();
 
   Future<void> fetchQuestionsOnce(String quizId) async {
     isLoading(true);
@@ -45,13 +47,6 @@ class QuestionController extends GetxController {
       });
     }
   }
-  // Future<void> addScore()async{
-  //   try {
-  //     final scoreAdd = await _firebaseQuestion
-  //   } catch (e) {
-
-  //   }
-  // }
 
   void startTime() {
     _time?.cancel();
@@ -86,10 +81,12 @@ class QuestionController extends GetxController {
     if (answer == correctAnswerText) {
       selectAnswerColor[correctAnswerText] = Colors.green;
       scoreCalanterPerMatch();
+      playCorrectAudio();
     } else {
       selectAnswerColor[answer] = Colors.red;
       selectAnswerColor[correctAnswerText] = Colors.green;
       health.value -= 1;
+      playWrongAudio();
     }
 
     if (health.value == 0) {
@@ -107,9 +104,8 @@ class QuestionController extends GetxController {
   }
 
   void scoreCalanterPerMatch() {
-    scorePerMatch.value += scorePerQuestion.value; 
+    scorePerMatch.value += scorePerQuestion.value;
   }
-  
 
   void gotoNextQuestion(BuildContext context) {
     if (questions.isEmpty) return;
@@ -154,13 +150,23 @@ class QuestionController extends GetxController {
     health.value = 3;
     totalScore.value = 0;
     isNavigating.value = false;
-    scorePerMatch.value= 0;
+    scorePerMatch.value = 0;
     isNewQuestion.value = true;
 
     Future.delayed(Duration(milliseconds: 300), () {
       isNewQuestion.value = false;
     });
   }
+  void playCorrectAudio() async {
+  final player = AudioPlayer();
+  await player.play(AssetSource('assets/audio/currect.mp3'));
+}
+
+void playWrongAudio() async {
+  final player = AudioPlayer();
+  await player.play(AssetSource('assets/audio/wrong.mp3'));
+}
+
 
   void showDiologEnd(BuildContext context) {
     final UserController userController = Get.find();
@@ -214,7 +220,6 @@ class QuestionController extends GetxController {
                       onPressed: () async {
                         await userController.addScoretoDB(totalScore.value);
                         Get.offAll(ResultPage());
-                      
                       },
                       text: 'Finish',
                       color: AppColor.introBk,
