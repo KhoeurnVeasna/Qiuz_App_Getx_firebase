@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import '../model/user.dart';
 import '../services/firebase_auth/firebase_authentication.dart';
@@ -12,6 +13,7 @@ class UserController extends GetxController {
   List<UserModel> get users => _users;
 
   final username = ''.obs;
+  final totalScore = 0.obs;
 
   void changeUsername(String newUsername) async {
     try {
@@ -26,32 +28,57 @@ class UserController extends GetxController {
   void onInit() {
     super.onInit();
     fetchCurrentUser();
+    fetchAllUser();
   }
 
-  Future<void> fetchCurrentUser() async {
-    try {
-      final userData = await _firebaseAuthentication.getCurrentUser();
-      if (userData != null) {
-        _currentUser.value = UserModel.fromMap(userData);
-      } else {
-        log('No user found in Firestore.');
-      }
-      username.value = _currentUser.value!.username;
-    } catch (e) {
-      log('Error fetching current user: $e');
+  void fetchCurrentUser() {
+    final String? userId = _firebaseAuthentication.getCurrentUserId();
+
+    if (userId == null) {
+      log('No authenticated user found.');
+      return;
     }
+
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .snapshots()
+        .listen(
+      (snapshot) {
+        if (snapshot.exists && snapshot.data() != null) {
+          _currentUser.value = UserModel.fromMap(snapshot.data()!);
+          username.value = _currentUser.value?.username ?? '';
+          totalScore.value = _currentUser.value?.score ?? 0;
+          log('User data updated from Firestore.');
+        } else {
+          log('User document does not exist.');
+        }
+      },
+      onError: (e) {
+        log('Error fetching user in real-time: $e');
+      },
+    );
   }
 
   Future<void> addScoretoDB(int score) async {
     try {
-      final bool success = await _firebaseAuthentication.addScore(score);
-      if (success) {
-        log('Score added successfully.');
+      final int? newScore = await _firebaseAuthentication.addScore(score);
+      if (newScore != null) {
+        log('Score updated successfully: $newScore');
+        totalScore.value = newScore; 
       } else {
         log('Failed to add score.');
       }
     } catch (e) {
       log('Error adding score to DB: $e');
+    }
+  }
+
+  void updateUserScore(int newScore) {
+    if (_currentUser.value != null) {
+      _currentUser.update((user) {
+        user?.score = newScore;
+      });
     }
   }
 

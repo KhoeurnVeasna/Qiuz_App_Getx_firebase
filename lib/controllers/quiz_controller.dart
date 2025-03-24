@@ -11,33 +11,36 @@ class QuizController extends GetxController {
 
   final quizzes = <Quiz>[].obs;
   final FirebaseQuiz _firebaseQuiz = FirebaseQuiz();
-  
+
   final isLoading = false.obs;
   final errorMessage = ''.obs;
-  
+
   void fetchQuizzes() async {
-    isLoading(true); 
+    isLoading(true);
+    errorMessage.value = '';
+
     try {
-     _firebaseQuiz.fetchQuizzes().listen((quizList) {
-      quizzes.assignAll(quizList); 
+      final initialQuizzes = await _firebaseQuiz.fetchQuizzes().first;
+      quizzes.assignAll(initialQuizzes);
+
+      _firebaseQuiz.fetchQuizzes().listen((quizList) {
+        quizzes.assignAll(quizList);
+      }, onError: (error) {
+        errorMessage.value = 'Failed to fetch quizzes: $error';
+      });
+
       isLoading(false);
-    }, onError: (error) {
-      errorMessage.value = 'Failed to fetch quizzes: $error';
-      isLoading(false);
-    });
     } catch (e) {
       errorMessage.value = 'Failed to fetch quizzes: $e';
       isLoading(false);
     }
   }
-  Future<void> delectMainQuestion(String id)async{
+
+  Future<void> delectMainQuestion(String id) async {
     try {
-     await _firebaseQuiz.deleteQuizzes(id);
+      await _firebaseQuiz.deleteQuizzes(id);
     } catch (e) {
       Get.snackbar("Error", "Failed to delete question: $e");
     }
   }
-  
- 
 }
-

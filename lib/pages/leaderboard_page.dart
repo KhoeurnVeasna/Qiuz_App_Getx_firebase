@@ -1,10 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import 'package:quiz_project/theme/colors.dart';
 import 'package:quiz_project/utils/fonts.dart';
-
 import '../controllers/user_controller.dart';
 
 class LeaderboardPage extends StatefulWidget {
@@ -16,12 +14,11 @@ class LeaderboardPage extends StatefulWidget {
 
 class _LeaderboardPageState extends State<LeaderboardPage> {
   final UserController _userController = Get.find();
-  // final QuestionController _questionController = Get.find();
 
   @override
   void initState() {
-    _userController.fetchAllUser();
     super.initState();
+    _userController.fetchAllUser();
   }
 
   @override
@@ -30,58 +27,57 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
       backgroundColor: AppColor.introBk2,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
+        elevation: 0,
         centerTitle: true,
-        title: Text(
-          'Leaderboard',
-          style: AppFonts.mainTitleBule,
-        ),
+        automaticallyImplyLeading: false,
+        title: Text('Leaderboard', style: AppFonts.mainTitleBule),
         actions: [
           Padding(
-              padding: EdgeInsets.only(left: 20, right: 20),
-              child: Text(
-                'Ponts ${_userController.currentUser?.score}',
-                style: AppFonts.userText,
-              )),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Obx(() => Text(
+                  'Points: ${_userController.currentUser?.score ?? 0}',
+                  style: AppFonts.userText,
+                )),
+          ),
         ],
       ),
       body: Obx(() {
-        return SingleChildScrollView(
-          child: Column(
-            children: [
-              ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: _userController.users.length,
-                  itemBuilder: (BuildContext ctx, index) {
-                    return Card(
-                        color: _userController.users[index].id ==
-                                FirebaseAuth.instance.currentUser?.uid
-                            ? Colors.green
-                            : AppColor.introBk,
-                        semanticContainer: true,
-                        clipBehavior: Clip.antiAliasWithSaveLayer,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        elevation: 5,
-                        margin: EdgeInsets.all(10),
-                        child: ListTile(
-                          title: Text(
-                            _userController.users[index].username,
-                            style: AppFonts.userText,
-                          ),
-                          trailing: Text(
-                            _userController.users[index].score.toString(),
-                            style: AppFonts.subTitleFont,
-                          ),
-                          leading: Text(
-                            '${(index + 1).toString()}.',
-                            style: AppFonts.userText,
-                          ),
-                        ));
-                  }),
-            ],
-          ),
+        if (_userController.users.isEmpty) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        return ListView.separated(
+          padding: const EdgeInsets.all(10),
+          itemCount: _userController.users.length,
+          separatorBuilder: (context, index) => const SizedBox(height: 5),
+          itemBuilder: (context, index) {
+            final user = _userController.users[index];
+            final isCurrentUser =
+                user.id == FirebaseAuth.instance.currentUser?.uid;
+
+            return Card(
+              color: isCurrentUser ? Colors.green : AppColor.introBk,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              elevation: 5,
+              child: ListTile(
+                leading: Text(
+                  '${index + 1}.',
+                  style: AppFonts.userText,
+                ),
+                title: Text(
+                  user.username,
+                  style: AppFonts.userText,
+                ),
+                trailing: Text(
+                  user.score.toString(),
+                  style: AppFonts.subTitleFont,
+                ),
+              ),
+            );
+          },
         );
       }),
     );

@@ -6,7 +6,7 @@ class UserModel {
   final String email;
   final String avatar;
   final DateTime dateOfBirth;
-  final int score;
+  int score;
 
   UserModel(
       {required this.id,

@@ -1,16 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:quiz_project/changelanguage.dart';
 import 'package:quiz_project/controllers/quiz_controller.dart';
 import 'package:quiz_project/controllers/user_controller.dart';
 import 'package:quiz_project/pages/takequestion_page.dart';
 import 'package:quiz_project/theme/colors.dart';
 import 'package:quiz_project/utils/fonts.dart';
 import '../model/quiz.dart';
-import '../services/firebase_auth/firebase_authentication.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -21,36 +19,44 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.introBk,
-      appBar: AppBar(
-        backgroundColor: AppColor.introBk2,
-        foregroundColor: AppColor.whiteBk,
-        automaticallyImplyLeading: false,
-        title: Padding(
-          padding: const EdgeInsets.only(left: 10, top: 5, bottom: 5),
-          child: CircleAvatar(
-            maxRadius: 25,
-            child: Obx(
-              () {
-                String username = _userController.username.value;
-                return Text(
-                  username.isNotEmpty ? username.substring(0, 1).toUpperCase() : '?',
-                );
-              },
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(70),
+        child: AppBar(
+          backgroundColor: AppColor.introBk2,
+          foregroundColor: AppColor.whiteBk,
+          automaticallyImplyLeading: false,
+          title: Padding(
+            padding: const EdgeInsets.only(left: 10, top: 5, bottom: 5),
+            child: CircleAvatar(
+              maxRadius: 25,
+              child: Obx(
+                () {
+                  String username = _userController.username.value;
+                  return Text(
+                    username.isNotEmpty
+                        ? username.substring(0, 1).toUpperCase()
+                        : '?',
+                  );
+                },
+              ),
             ),
           ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 15),
+              child: GestureDetector(
+                onTap: () {
+                  Get.to(Changelanguage());
+                },
+                child: CircleAvatar(
+                  backgroundImage: AssetImage('assets/logos/englishflag.png'),
+                  backgroundColor: AppColor.introBk2,
+                  maxRadius: 25,
+                ),
+              ),
+            )
+          ],
         ),
-        actions: [
-          IconButton(onPressed: () {}, icon: const FaIcon(FontAwesomeIcons.magnifyingGlass)),
-          Padding(
-            padding: const EdgeInsets.only(right: 20),
-            child: IconButton(
-              onPressed: () async {
-                await FirebaseAuthentication().logout();
-              },
-              icon: const FaIcon(FontAwesomeIcons.rightFromBracket),
-            ),
-          ),
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -99,12 +105,16 @@ class HomePage extends StatelessWidget {
                           children: [
                             Expanded(
                               child: ClipRRect(
-                                borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
+                                borderRadius: const BorderRadius.vertical(
+                                    top: Radius.circular(15)),
                                 child: CachedNetworkImage(
                                   imageUrl: quiz.imageUrl,
                                   fit: BoxFit.cover,
-                                  placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
-                                  errorWidget: (context, url, error) => const Icon(Icons.error, size: 50, color: Colors.red),
+                                  placeholder: (context, url) => const Center(
+                                      child: CircularProgressIndicator()),
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(Icons.error,
+                                          size: 50, color: Colors.red),
                                 ),
                               ),
                             ),
@@ -130,7 +140,6 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  /// Returns a color based on the quiz index
   Color _getQuizCardColor(int index) {
     switch (index) {
       case 0:

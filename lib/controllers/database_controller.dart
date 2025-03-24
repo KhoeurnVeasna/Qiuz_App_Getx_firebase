@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart';
+import 'package:path/path.dart' as p;
 import 'dart:io';
 
 class DatabaseController extends GetxController {
@@ -15,7 +15,7 @@ class DatabaseController extends GetxController {
 
   Future<Database> initDatabase() async {
     final Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    final String path = join(documentsDirectory.path, "my_database.db");
+    final String path = p.join(documentsDirectory.path, "my_database.db");
 
     return await openDatabase(
       path,

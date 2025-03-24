@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quiz_project/controllers/user_controller.dart';
+import 'package:quiz_project/pages/login_page.dart';
 import 'package:quiz_project/theme/colors.dart';
 import 'package:quiz_project/utils/fonts.dart';
 import 'package:quiz_project/widgets/button_submit_widget.dart';
@@ -167,6 +168,7 @@ class ProfilePage extends StatelessWidget {
                         onTap: () async {
                           if (index == itemsProfile.length - 1) {
                             await FirebaseAuthentication().logout();
+                            Get.offAll(LoginPage());
                           }
                         },
                         leading: itemsProfile[index]['icon'],

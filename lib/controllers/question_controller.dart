@@ -33,7 +33,7 @@ class QuestionController extends GetxController {
 
   Future<void> fetchQuestionsOnce(String quizId) async {
     isLoading(true);
-    isNewQuestion.value = true; // Enable animation when fetching
+    isNewQuestion.value = true; 
     try {
       final questionList = await _firebaseQuestion.fetchQuestionsOnce(quizId);
       questions.assignAll(questionList);
@@ -90,7 +90,7 @@ class QuestionController extends GetxController {
     }
 
     if (health.value == 0) {
-      Future.delayed(const Duration(seconds: 1), () {
+      Future.delayed(const Duration(seconds: 2), () {
         showDiologEnd(Get.context!);
         isNavigating.value = false;
       });
@@ -111,7 +111,7 @@ class QuestionController extends GetxController {
     if (questions.isEmpty) return;
 
     if (currentIndex.value < questions.length - 1) {
-      isNewQuestion.value = true; // Start animation
+      isNewQuestion.value = true; 
       currentIndex.value++;
 
       selectAnswer.value = '';
@@ -157,80 +157,84 @@ class QuestionController extends GetxController {
       isNewQuestion.value = false;
     });
   }
+
   void playCorrectAudio() async {
-  final player = AudioPlayer();
-  await player.play(AssetSource('assets/audio/currect.mp3'));
-}
-
-void playWrongAudio() async {
-  final player = AudioPlayer();
-  await player.play(AssetSource('assets/audio/wrong.mp3'));
-}
-
-
-  void showDiologEnd(BuildContext context) {
-    final UserController userController = Get.find();
-
-    totalScore.value += scorePerMatch.value; // ✅ Accumulate score correctly
-
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        backgroundColor: AppColor.introBk2,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-        ),
-        content: Builder(
-          builder: (context) {
-            var height = MediaQuery.of(context).size.height;
-            var width = MediaQuery.of(context).size.width;
-
-            return SizedBox(
-              height: height * 0.2,
-              width: width - 400,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Text(
-                      'You still have a chance to continue',
-                      style: AppFonts.subTitleFont,
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  SizedBox(
-                    width: double.infinity,
-                    height: height * 0.05,
-                    child: ButtonSubmitWidget(
-                      onPressed: () {
-                        startTime();
-                        resetQuestion();
-                        Get.back();
-                      },
-                      text: 'Continue',
-                      color: Colors.amber,
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  SizedBox(
-                    width: double.infinity,
-                    height: height * 0.05,
-                    child: ButtonSubmitWidget(
-                      onPressed: () async {
-                        await userController.addScoretoDB(totalScore.value);
-                        Get.offAll(ResultPage());
-                      },
-                      text: 'Finish',
-                      color: AppColor.introBk,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
-      ),
-    );
+    final player = AudioPlayer();
+    await player.play(AssetSource('audio/currect.mp3')); 
   }
+
+  void playWrongAudio() async {
+    final player = AudioPlayer();
+    await player.play(AssetSource('audio/wrong.mp3'));
+  }
+
+ void showDiologEnd(BuildContext context) {
+  final UserController userController = Get.find();
+
+  totalScore.value += scorePerMatch.value; // ✅ Accumulate score correctly
+
+  showDialog(
+    context: context,
+    builder: (context) => LayoutBuilder(
+      builder: (context, constraints) {
+        double maxDialogWidth = constraints.maxWidth * 0.7; // 70% of screen width
+        double dialogHeight = constraints.maxHeight * 0.3; // 30% of screen height
+        double buttonHeight = constraints.maxHeight * 0.06; // 6% of screen height
+
+        return AlertDialog(
+          backgroundColor: AppColor.introBk2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          content: SizedBox(
+            width: maxDialogWidth.clamp(300, 600), 
+            height: dialogHeight.clamp(200, 400),  
+            child: Column(
+              mainAxisSize: MainAxisSize.min, 
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: constraints.maxWidth * 0.05),
+                  child: Text(
+                    'You still have a chance to continue',
+                    style: AppFonts.subTitleFont,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: 15),
+                SizedBox(
+                  width: double.infinity,
+                  height: buttonHeight,
+                  child: ButtonSubmitWidget(
+                    onPressed: () {
+                      startTime();
+                      resetQuestion();
+                      Get.back();
+                    },
+                    text: 'Continue',
+                    color: Colors.amber,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: double.infinity,
+                  height: buttonHeight,
+                  child: ButtonSubmitWidget(
+                    onPressed: () async {
+                      await userController.addScoretoDB(totalScore.value);
+                      Get.offAll(ResultPage());
+                    },
+                    text: 'Finish',
+                    color: AppColor.introBk,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    ),
+  );
+}
+
 }

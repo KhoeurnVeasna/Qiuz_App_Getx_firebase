@@ -5,6 +5,8 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:quiz_project/controllers/quiz_controller.dart';
 
 import '../../model/user.dart';
 import '../../widgets/widget.dart';
@@ -16,6 +18,7 @@ class FirebaseAuthentication {
   Future<bool> login(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
+      Get.put(QuizController());
       return true;
     } on FirebaseAuthException catch (e) {
       log('Login failed: ${e.message}');
@@ -24,6 +27,10 @@ class FirebaseAuthentication {
       log('Unexpected error: $e');
       return false;
     }
+  }
+
+  String? getCurrentUserId() {
+    return _auth.currentUser?.uid;
   }
 
   Future<bool> sigin(String email, String password, String username) async {
@@ -41,25 +48,29 @@ class FirebaseAuthentication {
       return false;
     }
   }
+
   Future<bool> changeUserName(String newUserName) async {
-  try {
-    final user = _auth.currentUser;
-    if (user == null) {
-      log('Error: No user is logged in');
+    try {
+      final user = _auth.currentUser;
+      if (user == null) {
+        log('Error: No user is logged in');
+        return false;
+      }
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .update({
+        'username': newUserName,
+      });
+
+      log('Username successfully updated to: $newUserName');
+      return true;
+    } catch (e) {
+      log('Error changing username: $e');
       return false;
     }
-
-    await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
-      'username': newUserName,
-    });
-
-    log('Username successfully updated to: $newUserName');
-    return true;
-  } catch (e) {
-    log('Error changing username: $e');
-    return false;
   }
-}
 
   Future<void> logout() async {
     try {
@@ -119,37 +130,34 @@ class FirebaseAuthentication {
     }
   }
 
-  Future<bool> addScore(int score) async {
+  Future<int?> addScore(int score) async {
     try {
       final user = _auth.currentUser;
       if (user == null) {
         debugPrint('No authenticated user');
-        return false;
+        return null;
       }
 
       final userDocRef = _firestore.collection('users').doc(user.uid);
+      int? newScore;
 
       await _firestore.runTransaction((transaction) async {
         final userDoc = await transaction.get(userDocRef);
 
         if (userDoc.exists) {
           final currentScore = userDoc.data()?['score'] ?? 0;
-          final newScore = currentScore + score;
+          newScore = currentScore + score;
           transaction.update(userDocRef, {'score': newScore});
-          log('User score updated to: $newScore');
         } else {
-          transaction.set(userDocRef, {'score': score});
-          log(' User document created with score: $score');
+          newScore = score;
+          transaction.set(userDocRef, {'score': newScore});
         }
       });
 
-      return true; // Successfully added score
-    } on FirebaseException catch (e) {
-      debugPrint('Firebase error: ${e.message}');
-      return false;
+      return newScore; // ✅ Return updated score
     } catch (e) {
-      debugPrint('Unexpected error: $e');
-      return false;
+      debugPrint('Error updating score: $e');
+      return null;
     }
   }
 

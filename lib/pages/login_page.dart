@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:quiz_project/pages/main_page.dart';
 import 'package:quiz_project/services/firebase_auth/firebase_authentication.dart';
 import 'package:quiz_project/theme/colors.dart';
 import 'package:quiz_project/widgets/button_submit_widget.dart';
@@ -41,7 +43,7 @@ class LoginPage extends StatelessWidget {
               ),
               Container(
                 width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.72,
+                height: MediaQuery.of(context).size.height * 0.8,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
@@ -104,7 +106,7 @@ class LoginPage extends StatelessWidget {
                             if (isLoggedIn) {
                               showSnackbar(
                                   context, 'Login success', Colors.green);
-                              Navigator.pushNamed(context, '/mainPage');
+                              Get.to(MainPage());
                             } else {
                               showSnackbar(context, 'Login failed', Colors.red);
                             }
