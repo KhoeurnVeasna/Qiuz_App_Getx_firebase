@@ -28,7 +28,7 @@ class QuizController extends GetxController {
       }, onError: (error) {
         errorMessage.value = 'Failed to fetch quizzes: $error';
       });
-
+      
       isLoading(false);
     } catch (e) {
       errorMessage.value = 'Failed to fetch quizzes: $e';

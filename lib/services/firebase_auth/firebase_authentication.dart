@@ -5,8 +5,6 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:quiz_project/controllers/quiz_controller.dart';
 
 import '../../model/user.dart';
 import '../../widgets/widget.dart';
@@ -15,10 +13,46 @@ class FirebaseAuthentication {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  // Future<bool> login(String email, String password) async {
+  //   try {
+  //     await _auth.signInWithEmailAndPassword(email: email, password: password);
+
+  //     if (Get.isRegistered<UserController>()) {
+  //       Get.delete<UserController>();
+  //     }
+
+  //     Get.put(UserController());
+
+  //     if (!Get.isRegistered<QuizController>()) {
+  //       Get.put(QuizController());
+  //     }
+
+  //     return true;
+  //   } on FirebaseAuthException catch (e) {
+  //     log('Login failed: ${e.message}');
+  //     return false;
+  //   } catch (e) {
+  //     log('Unexpected error: $e');
+  //     return false;
+  //   }
+  // }
+  //  Future<void> logout() async {
+  //   try {
+  //     await _auth.signOut();
+  //     if (Get.isRegistered<UserController>()) {
+  //       Get.delete<UserController>();
+  //     }
+
+  //     Get.put(UserController());
+
+  //     Get.offAll(LoginPage());
+  //   } catch (e) {
+  //     log('somthing make logout wrong $e');
+  //   }
+  // }
   Future<bool> login(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
-      Get.put(QuizController());
       return true;
     } on FirebaseAuthException catch (e) {
       log('Login failed: ${e.message}');
@@ -29,22 +63,29 @@ class FirebaseAuthentication {
     }
   }
 
-  String? getCurrentUserId() {
-    return _auth.currentUser?.uid;
+  Future<void> logout() async {
+    try {
+      await _auth.signOut();
+    } catch (e) {
+      log('Something went wrong during logout: $e');
+    }
   }
 
   Future<bool> sigin(String email, String password, String username) async {
     try {
       await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
+        email: email,
+        password: password,
+      );
 
       await saveUser(username, email);
+
       return true;
     } on FirebaseAuthException catch (e) {
-      log('error sign ${e.message}');
+      log('Error signing up: ${e.message}');
       return false;
     } catch (e) {
-      log('error sign $e');
+      log('Unexpected error signing up: $e');
       return false;
     }
   }
@@ -72,14 +113,6 @@ class FirebaseAuthentication {
     }
   }
 
-  Future<void> logout() async {
-    try {
-      await _auth.signOut();
-    } catch (e) {
-      log('somthing make logout wrong $e');
-    }
-  }
-
   Future<void> saveUser(String username, String email) async {
     try {
       final user = _auth.currentUser;
@@ -88,6 +121,7 @@ class FirebaseAuthentication {
           'username': username,
           'email': email,
           'uid': user.uid,
+          'score': 0
         });
       } else {
         log('User not authenticated');
@@ -97,20 +131,27 @@ class FirebaseAuthentication {
     }
   }
 
-  Future<Map<String, dynamic>?> getCurrentUser() async {
+  Future<Map<String, dynamic>?> getCurrentUserByID() async {
     try {
       final user = _auth.currentUser;
-      if (user != null) {
-        DocumentSnapshot userDoc =
-            await _firestore.collection('users').doc(user.uid).get();
-        if (userDoc.exists) {
-          return userDoc.data() as Map<String, dynamic>?;
-        }
+      if (user == null) {
+        log('No authenticated user.');
+        return null;
+      }
+
+      DocumentSnapshot userDoc =
+          await _firestore.collection('users').doc(user.uid).get();
+
+      if (userDoc.exists && userDoc.data() != null) {
+        return userDoc.data() as Map<String, dynamic>;
+      } else {
+        log('User document does not exist.');
+        return null;
       }
     } catch (e) {
       log('Error fetching current user: $e');
+      return null;
     }
-    return null;
   }
 
   Future<List<UserModel>> fetchAllUser() async {

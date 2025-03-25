@@ -78,8 +78,18 @@ class HomePage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             Expanded(
-              child: GetBuilder<QuizController>(
-                builder: (_) => GridView.builder(
+              child: Obx(() {
+                if (_quizController.isLoading.value) {
+                  return const Center(
+                      child:
+                          CircularProgressIndicator()); 
+                }
+                if (_quizController.quizzes.isEmpty) {
+                  return const Center(
+                      child: Text(
+                          "No quizzes Right now.")); 
+                }
+                return GridView.builder(
                   shrinkWrap: true,
                   itemCount: _quizController.quizzes.length,
                   physics: const BouncingScrollPhysics(),
@@ -131,8 +141,8 @@ class HomePage extends StatelessWidget {
                       ),
                     );
                   },
-                ),
-              ),
+                );
+              }),
             ),
           ],
         ),

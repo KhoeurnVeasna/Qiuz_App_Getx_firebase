@@ -1,6 +1,7 @@
 import 'dart:developer';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:quiz_project/pages/home_page.dart';
+import 'package:quiz_project/pages/login_page.dart';
 import '../model/user.dart';
 import '../services/firebase_auth/firebase_authentication.dart';
 
@@ -15,6 +16,13 @@ class UserController extends GetxController {
   final username = ''.obs;
   final totalScore = 0.obs;
 
+  @override
+  void onInit() {
+    super.onInit();
+    fetchCurrentUser();
+    fetchAllUser();
+  }
+
   void changeUsername(String newUsername) async {
     try {
       await _firebaseAuthentication.changeUserName(newUsername);
@@ -24,48 +32,79 @@ class UserController extends GetxController {
     }
   }
 
-  @override
-  void onInit() {
-    super.onInit();
-    fetchCurrentUser();
-    fetchAllUser();
-  }
-
-  void fetchCurrentUser() {
-    final String? userId = _firebaseAuthentication.getCurrentUserId();
-
-    if (userId == null) {
-      log('No authenticated user found.');
-      return;
+  Future<bool> login(String email, String password) async {
+    try {
+      bool seccuess = await _firebaseAuthentication.login(email, password);
+      if (seccuess) {
+        fetchCurrentUser();
+        fetchAllUser();
+        Get.offAll(HomePage());
+        return true;
+      } else {
+        log('Login Filed');
+        return false;
+      }
+    } catch (e) {
+      log('error to login userController ');
+      return false;
     }
-
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(userId)
-        .snapshots()
-        .listen(
-      (snapshot) {
-        if (snapshot.exists && snapshot.data() != null) {
-          _currentUser.value = UserModel.fromMap(snapshot.data()!);
-          username.value = _currentUser.value?.username ?? '';
-          totalScore.value = _currentUser.value?.score ?? 0;
-          log('User data updated from Firestore.');
-        } else {
-          log('User document does not exist.');
-        }
-      },
-      onError: (e) {
-        log('Error fetching user in real-time: $e');
-      },
-    );
   }
+  Future<bool> sigin(String email, String password, String username)async{
+    try {
+      bool seccuess = await _firebaseAuthentication.sigin(email, password, username);
+      if(seccuess){
+       await fetchAllUser();
+       await fetchCurrentUser();
+        Get.offAll(HomePage());
+        return true;
+      }
+      else{
+        log('error to sigin');
+        return false;
+      }
+    } catch (e) {
+      log('eorr to sigin $e');
+      return false ; 
+    }
+  }
+
+  void logout() async {
+    try {
+      await _firebaseAuthentication.logout();
+      _currentUser.value = null;
+      username.value = '';
+      totalScore.value = 0;
+      _users.clear();
+      Get.offAll(LoginPage());
+    } catch (e) {
+      log('error to Logout');
+    }
+  }
+
+ Future<void> fetchCurrentUser() async {
+  try {
+    final userData = await _firebaseAuthentication.getCurrentUserByID();
+
+    if (userData != null) {
+      _currentUser.value = UserModel.fromMap(userData);
+      username.value = _currentUser.value?.username ?? '';
+      totalScore.value = _currentUser.value?.score ?? 0;
+      log(' User data loaded successfully.');
+    } else {
+      log(' No user data found in Firestore.');
+    }
+  } catch (e) {
+    log(' Error fetching current user: $e');
+  }
+}
+
 
   Future<void> addScoretoDB(int score) async {
     try {
       final int? newScore = await _firebaseAuthentication.addScore(score);
       if (newScore != null) {
         log('Score updated successfully: $newScore');
-        totalScore.value = newScore; 
+        totalScore.value = newScore;
       } else {
         log('Failed to add score.');
       }
