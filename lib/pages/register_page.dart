@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:quiz_project/controllers/user_controller.dart';
 import 'package:quiz_project/widgets/button_submit_widget.dart';
 import 'package:quiz_project/widgets/widget.dart';
-
-import '../services/firebase_auth/firebase_authentication.dart';
 import '../theme/colors.dart';
 import '../widgets/text_field_widget.dart';
 
@@ -20,7 +20,8 @@ class RegisterPage extends StatelessWidget {
   static double spaceHeightLogin(BuildContext context) =>
       MediaQuery.of(context).size.height * 0.05;
 
-  final formKey = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>(); 
+  final UserController _userController =Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +107,7 @@ class RegisterPage extends StatelessWidget {
                           onPressed: () async {
                             if (formKey.currentState!.validate()) {
                               FocusScope.of(context).unfocus();
-                              bool isRegister = await FirebaseAuthentication()
+                              bool isRegister = await _userController
                                   .sigin(
                                       _emailController.text.trim(),
                                       _passwordController.text.trim(),

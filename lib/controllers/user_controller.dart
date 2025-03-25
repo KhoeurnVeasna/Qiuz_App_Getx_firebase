@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'package:get/get.dart';
-import 'package:quiz_project/pages/home_page.dart';
 import 'package:quiz_project/pages/login_page.dart';
+import 'package:quiz_project/pages/main_page.dart';
 import '../model/user.dart';
 import '../services/firebase_auth/firebase_authentication.dart';
 
@@ -12,7 +12,8 @@ class UserController extends GetxController {
   final FirebaseAuthentication _firebaseAuthentication =
       FirebaseAuthentication();
   List<UserModel> get users => _users;
-
+  final isLoading = false.obs;
+  final isRegiser = false.obs;
   final username = ''.obs;
   final totalScore = 0.obs;
 
@@ -33,12 +34,13 @@ class UserController extends GetxController {
   }
 
   Future<bool> login(String email, String password) async {
+    isLoading.value = true;
     try {
       bool seccuess = await _firebaseAuthentication.login(email, password);
       if (seccuess) {
         fetchCurrentUser();
         fetchAllUser();
-        Get.offAll(HomePage());
+        Get.offAll(MainPage());
         return true;
       } else {
         log('Login Filed');
@@ -49,26 +51,30 @@ class UserController extends GetxController {
       return false;
     }
   }
-  Future<bool> sigin(String email, String password, String username)async{
+
+  Future<bool> sigin(String email, String password, String username) async {
+    isRegiser.value = false ;
     try {
-      bool seccuess = await _firebaseAuthentication.sigin(email, password, username);
-      if(seccuess){
-       await fetchAllUser();
-       await fetchCurrentUser();
-        Get.offAll(HomePage());
+      bool seccuess =
+          await _firebaseAuthentication.sigin(email, password, username);
+      if (seccuess) {
+        await fetchAllUser();
+        await fetchCurrentUser();
+        Get.offAll(MainPage());
         return true;
-      }
-      else{
+      } else {
         log('error to sigin');
         return false;
       }
     } catch (e) {
       log('eorr to sigin $e');
-      return false ; 
+      return false;
     }
   }
 
   void logout() async {
+    isLoading.value = false;
+    isRegiser.value =false;
     try {
       await _firebaseAuthentication.logout();
       _currentUser.value = null;
@@ -81,23 +87,22 @@ class UserController extends GetxController {
     }
   }
 
- Future<void> fetchCurrentUser() async {
-  try {
-    final userData = await _firebaseAuthentication.getCurrentUserByID();
+  Future<void> fetchCurrentUser() async {
+    try {
+      final userData = await _firebaseAuthentication.getCurrentUserByID();
 
-    if (userData != null) {
-      _currentUser.value = UserModel.fromMap(userData);
-      username.value = _currentUser.value?.username ?? '';
-      totalScore.value = _currentUser.value?.score ?? 0;
-      log(' User data loaded successfully.');
-    } else {
-      log(' No user data found in Firestore.');
+      if (userData != null) {
+        _currentUser.value = UserModel.fromMap(userData);
+        username.value = _currentUser.value?.username ?? '';
+        totalScore.value = _currentUser.value?.score ?? 0;
+        log(' User data loaded successfully.');
+      } else {
+        log(' No user data found in Firestore.');
+      }
+    } catch (e) {
+      log(' Error fetching current user: $e');
     }
-  } catch (e) {
-    log(' Error fetching current user: $e');
   }
-}
-
 
   Future<void> addScoretoDB(int score) async {
     try {

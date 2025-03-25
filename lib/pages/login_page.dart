@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:quiz_project/controllers/user_controller.dart';
 import 'package:quiz_project/pages/main_page.dart';
-import 'package:quiz_project/services/firebase_auth/firebase_authentication.dart';
+import 'package:quiz_project/pages/register_page.dart';
 import 'package:quiz_project/theme/colors.dart';
 import 'package:quiz_project/widgets/button_submit_widget.dart';
 import 'package:quiz_project/widgets/text_field_widget.dart';
@@ -21,7 +22,7 @@ class LoginPage extends StatelessWidget {
       MediaQuery.of(context).size.height * 0.05;
 
   final formKey = GlobalKey<FormState>();
-  
+  final UserController _userController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +68,6 @@ class LoginPage extends StatelessWidget {
                       TextFieldWidget(
                           controller: _emailController,
                           focusNode: _emailFocus,
-                        
                           label: 'Email',
                           icon: Icon(
                             Icons.person,
@@ -89,36 +89,41 @@ class LoginPage extends StatelessWidget {
                           alignment: Alignment.centerRight,
                           child: TextButton(
                               onPressed: () {
-                                Navigator.pushNamed(context, '/forgotPasswordPage');
+                                Navigator.pushNamed(
+                                    context, '/forgotPasswordPage');
                               },
                               child: Text('Forgot Password?'))),
                       SizedBox(
                         height: 60,
                         width: 200,
-                        child:ButtonSubmitWidget(onPressed: ()async{
-                          if (formKey.currentState!.validate()) {
-                            bool isLoggedIn =
-                                await FirebaseAuthentication().login(
-                              _emailController.text.trim(),
-                              _passwordController.text.trim(),
-                            );
-                            if (!context.mounted) return;
-                            if (isLoggedIn) {
-                              showSnackbar(
-                                  context, 'Login success', Colors.green);
-                              Get.to(MainPage());
-                            } else {
-                              showSnackbar(context, 'Login failed', Colors.red);
+                        child: ButtonSubmitWidget(
+                          onPressed: () async {
+                            if (formKey.currentState!.validate()) {
+                              bool isLoggedIn = await _userController.login(
+                                _emailController.text.trim(),
+                                _passwordController.text.trim(),
+                              );
+                              if (!context.mounted) return;
+                              if (isLoggedIn) {
+                                showSnackbar(
+                                    context, 'Login success', Colors.green);
+                                Get.to(MainPage());
+                              } else {
+                                showSnackbar(
+                                    context, 'Login failed', Colors.red);
+                              }
                             }
-                          }
 
-                          if (_emailController.text.isEmpty) {
-                            FocusScope.of(context).requestFocus(_emailFocus);
-                          } else if (_passwordController.text.isEmpty) {
-                            FocusScope.of(context).requestFocus(_passwordFocus);
-                          }
-                        },text: 'Login',
-                        color:AppColor.introBk2,),
+                            if (_emailController.text.isEmpty) {
+                              FocusScope.of(context).requestFocus(_emailFocus);
+                            } else if (_passwordController.text.isEmpty) {
+                              FocusScope.of(context)
+                                  .requestFocus(_passwordFocus);
+                            }
+                          },
+                          text: 'Login',
+                          color: AppColor.introBk2,
+                        ),
                       ),
                       SizedBox(
                         height: spaceHeight(context),
@@ -153,8 +158,8 @@ class LoginPage extends StatelessWidget {
                         children: [
                           iconButton(AppColor.introTxt,
                               ('assets/logos/Facebook_Logo_2023.png'), () {}),
-                          iconButton(
-                              AppColor.introTxt, 'assets/logos/7611770.png', () {})
+                          iconButton(AppColor.introTxt,
+                              'assets/logos/7611770.png', () {})
                         ],
                       ),
                       SizedBox(
@@ -166,7 +171,9 @@ class LoginPage extends StatelessWidget {
                           Text('Are you new here?'),
                           TextButton(
                             onPressed: () {
-                              Navigator.pushNamed(context, '/registerPage');
+                              Get.to(
+                                 RegisterPage(),
+                              );
                             },
                             child: Text('Register Now'),
                           ),

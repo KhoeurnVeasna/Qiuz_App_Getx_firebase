@@ -35,7 +35,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Obx(() => Text(
-                  'Points: ${_userController.currentUser?.score ?? 0}',
+                  'Points: ${_userController.totalScore }',
                   style: AppFonts.userText,
                 )),
           ),
