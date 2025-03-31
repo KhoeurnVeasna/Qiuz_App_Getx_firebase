@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:quiz_project/services/servies_storage/service_storage.dart';
 
-Widget chooselangue(String language, String image, BuildContext context) {
+Widget chooselangue(String language, String image, BuildContext context , void Function()? onPressed) {
   return SizedBox(
     height: 60,
     width: 250,
@@ -15,12 +14,13 @@ Widget chooselangue(String language, String image, BuildContext context) {
         shape: WidgetStateProperty.all(
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(35))),
       ),
-      onPressed: () async{
-        await ServiceStorage().saveIntroductionPageStatus(true);
-        // ignore: use_build_context_synchronously
-        Navigator.pushNamed(context, '/loginPage');
+      onPressed: onPressed ,
+      //() async{
+      //   await ServiceStorage().saveIntroductionPageStatus(true);
+      //   // // ignore: use_build_context_synchronously
+      //   // Navigator.pushNamed(context, '/loginPage');
         
-      },
+      // },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [

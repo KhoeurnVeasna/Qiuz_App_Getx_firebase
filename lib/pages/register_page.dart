@@ -6,6 +6,8 @@ import 'package:quiz_project/widgets/button_submit_widget.dart';
 import 'package:quiz_project/widgets/widget.dart';
 import '../theme/colors.dart';
 import '../widgets/text_field_widget.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class RegisterPage extends StatelessWidget {
   RegisterPage({super.key});
@@ -22,9 +24,12 @@ class RegisterPage extends StatelessWidget {
 
   final formKey = GlobalKey<FormState>(); 
   final UserController _userController =Get.find();
+  
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations tran = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColor.introBk2,
       body: SingleChildScrollView(
@@ -56,7 +61,7 @@ class RegisterPage extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('Wellcome to My App',
+                      Text(tran.welcometoMyapp,
                           style: GoogleFonts.robotoCondensed(
                               fontSize: 25,
                               fontWeight: FontWeight.w800,
@@ -68,7 +73,7 @@ class RegisterPage extends StatelessWidget {
                         controller: _usernameController,
                         focusNode: _usernameFocus,
                         icon: Icon(Icons.person, color: AppColor.introBk),
-                        label: 'Username',
+                        label: tran.username,
                       ),
 
                       SizedBox(
@@ -78,7 +83,7 @@ class RegisterPage extends StatelessWidget {
                           controller: _emailController,
                           focusNode: _emailFocus,
                           icon: Icon(Icons.email, color: AppColor.introBk),
-                          label: 'Email'),
+                          label: tran.email),
 
                       SizedBox(
                         height: spaceHeight(context),
@@ -87,7 +92,7 @@ class RegisterPage extends StatelessWidget {
                         controller: _passwordController,
                         focusNode: _passwordFocus,
                         icon: Icon(Icons.lock, color: AppColor.introBk),
-                        label: 'Password',
+                        label: tran.password,
                         obscureText: true,
                       ),
                       // Align(
@@ -103,7 +108,7 @@ class RegisterPage extends StatelessWidget {
                         height: 60,
                         width: 200,
                         child: ButtonSubmitWidget(
-                          text: 'Register',
+                          text: tran.register,
                           onPressed: () async {
                             if (formKey.currentState!.validate()) {
                               FocusScope.of(context).unfocus();
@@ -148,7 +153,7 @@ class RegisterPage extends StatelessWidget {
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
-                              'or Register with',
+                              tran.orrigister,
                               style: TextStyle(color: Colors.black),
                             ),
                           ),
@@ -207,12 +212,12 @@ class RegisterPage extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('Are you a Member?'),
+                          Text(tran.areYouamem),
                           TextButton(
                             onPressed: () {
                               Navigator.pushNamed(context, '/loginPage');
                             },
-                            child: Text('login Now'),
+                            child: Text(tran.loginnow),
                           ),
                         ],
                       ),

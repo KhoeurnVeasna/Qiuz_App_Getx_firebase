@@ -1,0 +1,18 @@
+{
+  "@@locale": "km",
+  "login": "ចូលគណនី",
+  "welcome": "សូមស្វាគមន៍ត្រឡប់មកវិញ!",
+  "language": "ភាសា",
+  "forgetPassword": "ភ្លេចពាក្យសម្ងាត់?",
+  "orLoginWith": "ឬចូលប្រើជាមួយ",
+  "areYouNewHere": "តើអ្នកថ្មីនៅទីនេះឬ?",
+  "email": "អ៊ីមែល",
+  "password": "ពាក្យសម្ងាត់",
+  "registerNow":"ចុះឈ្មោះ",
+  "welcometoMyapp": "សូមស្វាគមន៍មកកាន់ App ",
+  "username": "ឈ្មោះរបស់អ្នក",
+  "orrigister": "ឬចុះឈ្មោះប្រើជាមួយ",
+  "areYouamem": "អ្នកជាសមាជិក?",
+  "loginnow": "ចូលគណនីវិញ?",
+  "register": "ចុះឈ្មោះ"
+}

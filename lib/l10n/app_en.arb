@@ -1,0 +1,18 @@
+{
+  "@@locale": "en",
+  "login": "Login",
+  "welcome": "Welcome Back!",
+  "language": "Language",
+  "forgetPassword": "Forget Password?",
+  "orLoginWith": "or Login with",
+  "areYouNewHere": "Are you new here?",
+  "email": "Email",
+  "password": "Password",
+  "registerNow":"RegisterNow",
+  "welcometoMyapp": "Welcome to My app",
+  "username": "Username",
+  "orrigister": "or Register with",
+  "areYouamem": "Are you a Member? ",
+  "loginnow": "Login now",
+  "register": "Register"
+}

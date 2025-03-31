@@ -169,7 +169,6 @@ class _TakequestionPageState extends State<TakequestionPage> {
                 if (questionMain.options.isEmpty) {
                   return const Center(child: Text("No Options Available"));
                 }
-
                 return ListView.builder(
                   itemCount: questionMain.options.length,
                   itemBuilder: (ctx, index) {

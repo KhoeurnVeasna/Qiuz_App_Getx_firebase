@@ -4,11 +4,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:quiz_project/controllers/user_controller.dart';
 import 'package:quiz_project/pages/main_page.dart';
 import 'package:quiz_project/pages/register_page.dart';
+import 'package:quiz_project/services/servies_storage/service_storage.dart';
 import 'package:quiz_project/theme/colors.dart';
 import 'package:quiz_project/widgets/button_submit_widget.dart';
 import 'package:quiz_project/widgets/text_field_widget.dart';
-
 import '../widgets/widget.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -23,9 +24,11 @@ class LoginPage extends StatelessWidget {
 
   final formKey = GlobalKey<FormState>();
   final UserController _userController = Get.find();
+  final ServiceStorage _serviceStorage = ServiceStorage();
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations tran = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColor.introBk2,
       body: SingleChildScrollView(
@@ -57,8 +60,8 @@ class LoginPage extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('Wellcome Back!',
-                          style: GoogleFonts.robotoCondensed(
+                      Text(tran.welcome,
+                          style: GoogleFonts.koulen(
                               fontSize: 25,
                               fontWeight: FontWeight.w800,
                               color: AppColor.wellcom)),
@@ -68,7 +71,7 @@ class LoginPage extends StatelessWidget {
                       TextFieldWidget(
                           controller: _emailController,
                           focusNode: _emailFocus,
-                          label: 'Email',
+                          label: tran.email,
                           icon: Icon(
                             Icons.person,
                             color: AppColor.introBk,
@@ -80,7 +83,7 @@ class LoginPage extends StatelessWidget {
                           controller: _passwordController,
                           focusNode: _passwordFocus,
                           obscureText: true,
-                          label: 'Password',
+                          label: tran.password,
                           icon: Icon(
                             Icons.lock,
                             color: AppColor.introBk,
@@ -92,7 +95,7 @@ class LoginPage extends StatelessWidget {
                                 Navigator.pushNamed(
                                     context, '/forgotPasswordPage');
                               },
-                              child: Text('Forgot Password?'))),
+                              child: Text(tran.forgetPassword))),
                       SizedBox(
                         height: 60,
                         width: 200,
@@ -121,7 +124,7 @@ class LoginPage extends StatelessWidget {
                                   .requestFocus(_passwordFocus);
                             }
                           },
-                          text: 'Login',
+                          text: tran.login,
                           color: AppColor.introBk2,
                         ),
                       ),
@@ -139,7 +142,7 @@ class LoginPage extends StatelessWidget {
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
-                              'or Login with',
+                              tran.orLoginWith,
                               style: TextStyle(color: Colors.black),
                             ),
                           ),
@@ -157,7 +160,9 @@ class LoginPage extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           iconButton(AppColor.introTxt,
-                              ('assets/logos/Facebook_Logo_2023.png'), () {}),
+                              ('assets/logos/Facebook_Logo_2023.png'), ()async {
+                                await _serviceStorage.clearIntroductionPageStatus();
+                              }),
                           iconButton(AppColor.introTxt,
                               'assets/logos/7611770.png', () {})
                         ],
@@ -168,14 +173,14 @@ class LoginPage extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('Are you new here?'),
+                          Text(tran.areYouNewHere),
                           TextButton(
                             onPressed: () {
                               Get.to(
                                  RegisterPage(),
                               );
                             },
-                            child: Text('Register Now'),
+                            child: Text(tran.registerNow),
                           ),
                         ],
                       ),

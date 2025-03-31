@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:quiz_project/pages/login_page.dart';
+import 'package:quiz_project/services/servies_storage/service_storage.dart';
 import 'package:quiz_project/theme/colors.dart';
 
 import '../../widgets/widget.dart';
@@ -47,12 +50,22 @@ class IntroductionPage extends StatelessWidget {
                   height: MediaQuery.of(context).size.height * 0.1,
                 ),
                 chooselangue(
-                    'ភាសាខ្មែរ', 'assets/logos/cambodiaflage.png', context),
+                    'ភាសាខ្មែរ', 'assets/logos/cambodiaflage.png', context, ()async{
+                      await ServiceStorage().saveIntroductionPageStatus(true);
+                      await ServiceStorage().saveSelectedLanguage('km');
+                      Get.updateLocale(Locale('km')); 
+                      Get.offAll(LoginPage());
+                    }),
                 SizedBox(
                   height: 20,
                 ),
                 chooselangue(
-                    'English', 'assets/logos/englishflag.png', context),
+                    'English', 'assets/logos/englishflag.png', context,()async{
+                      await ServiceStorage().saveIntroductionPageStatus(true);
+                      await ServiceStorage().saveSelectedLanguage('en');
+                      Get.updateLocale(Locale('en')); 
+                      Get.offAll(LoginPage());
+                    }),
               ],
             ),
           ),
