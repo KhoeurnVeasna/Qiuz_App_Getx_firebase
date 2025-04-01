@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:quiz_project/theme/colors.dart';
 import 'package:quiz_project/utils/fonts.dart';
 import '../controllers/user_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LeaderboardPage extends StatefulWidget {
   const LeaderboardPage({super.key});
@@ -23,6 +24,8 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations tran = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColor.introBk2,
       appBar: AppBar(
@@ -30,12 +33,12 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
         elevation: 0,
         centerTitle: true,
         automaticallyImplyLeading: false,
-        title: Text('Leaderboard', style: AppFonts.mainTitleBule),
+        title: Text(tran.leaderbord, style: AppFonts.mainTitleBule),
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Obx(() => Text(
-                  'Points: ${_userController.totalScore }',
+                  '${tran.points} ${_userController.totalScore}',
                   style: AppFonts.userText,
                 )),
           ),

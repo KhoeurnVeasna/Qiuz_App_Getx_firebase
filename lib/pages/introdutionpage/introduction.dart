@@ -15,27 +15,29 @@ class IntroductionPage extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          
           Container(
             width: double.infinity,
             height: MediaQuery.of(context).size.height,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
                 colors: [
                   AppColor.introBk,
                   AppColor.introBk2,
-                  AppColor.introBk2,
                 ],
+                stops: [0.1, 0.9],
               ),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Hero(
-                  tag: 'logoHero',
-                  child: Image.asset('assets/logos/logoapp.png', width: 300,)),
+                    tag: 'logoHero',
+                    child: Image.asset(
+                      'assets/logos/logoapp.png',
+                      width: 300,
+                    )),
                 Center(
                   child: Text(
                     'សួស្តី! សូមជ្រើសរើសភាសារបស់អ្នក',
@@ -50,22 +52,23 @@ class IntroductionPage extends StatelessWidget {
                   height: MediaQuery.of(context).size.height * 0.1,
                 ),
                 chooselangue(
-                    'ភាសាខ្មែរ', 'assets/logos/cambodiaflage.png', context, ()async{
-                      await ServiceStorage().saveIntroductionPageStatus(true);
-                      await ServiceStorage().saveSelectedLanguage('km');
-                      Get.updateLocale(Locale('km')); 
-                      Get.offAll(LoginPage());
-                    }),
+                    'ភាសាខ្មែរ', 'assets/logos/cambodiaflage.png', context,
+                    () async {
+                  await ServiceStorage().saveIntroductionPageStatus(true);
+                  await ServiceStorage().saveSelectedLanguage('km');
+                  Get.updateLocale(Locale('km'));
+                  Get.offAll(LoginPage());
+                }),
                 SizedBox(
                   height: 20,
                 ),
-                chooselangue(
-                    'English', 'assets/logos/englishflag.png', context,()async{
-                      await ServiceStorage().saveIntroductionPageStatus(true);
-                      await ServiceStorage().saveSelectedLanguage('en');
-                      Get.updateLocale(Locale('en')); 
-                      Get.offAll(LoginPage());
-                    }),
+                chooselangue('English', 'assets/logos/englishflag.png', context,
+                    () async {
+                  await ServiceStorage().saveIntroductionPageStatus(true);
+                  await ServiceStorage().saveSelectedLanguage('en');
+                  Get.updateLocale(Locale('en'));
+                  Get.offAll(LoginPage());
+                }),
               ],
             ),
           ),
@@ -74,5 +77,3 @@ class IntroductionPage extends StatelessWidget {
     );
   }
 }
-
-

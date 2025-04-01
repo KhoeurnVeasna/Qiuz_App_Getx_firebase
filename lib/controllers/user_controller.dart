@@ -4,6 +4,7 @@ import 'package:quiz_project/pages/login_page.dart';
 import 'package:quiz_project/pages/main_page.dart';
 import '../model/user.dart';
 import '../services/firebase_auth/firebase_authentication.dart';
+import '../services/firebase_auth/google_login_service.dart';
 
 class UserController extends GetxController {
   final Rx<UserModel?> _currentUser = Rx<UserModel?>(null);
@@ -11,6 +12,7 @@ class UserController extends GetxController {
   final _users = <UserModel>[].obs;
   final FirebaseAuthentication _firebaseAuthentication =
       FirebaseAuthentication();
+  final GoogleLoginService _googleLoginService = GoogleLoginService();
   List<UserModel> get users => _users;
   final isLoading = false.obs;
   final isRegiser = false.obs;
@@ -53,7 +55,7 @@ class UserController extends GetxController {
   }
 
   Future<bool> sigin(String email, String password, String username) async {
-    isRegiser.value = false ;
+    isRegiser.value = false;
     try {
       bool seccuess =
           await _firebaseAuthentication.sigin(email, password, username);
@@ -74,7 +76,7 @@ class UserController extends GetxController {
 
   void logout() async {
     isLoading.value = false;
-    isRegiser.value =false;
+    isRegiser.value = false;
     try {
       await _firebaseAuthentication.logout();
       _currentUser.value = null;
@@ -139,6 +141,37 @@ class UserController extends GetxController {
       _users.assignAll(allUsers);
     } catch (e) {
       log(' Error fetching all users in Controller: $e');
+    }
+  }
+
+  Future<void> googleSignIn() async {
+    try {
+      final user = await _googleLoginService.signInWithGoogle();
+      if (user != null) {
+        final userData = await _firebaseAuthentication.getCurrentUserByID();
+        if (userData != null) {
+          _currentUser.value = UserModel.fromMap(userData);
+          username.value = _currentUser.value?.username ?? '';
+          totalScore.value = _currentUser.value?.score ?? 0;
+          Get.offAll(MainPage());
+        } else {
+          log('No user data found in Firestore.');
+        }
+      } else {
+        log('Google sign-in failed.');
+      }
+    } catch (e) {
+      log('Error during Google sign-in: $e');
+    }
+  }
+
+  Future<void> googleSignOut() async {
+    try {
+      await _googleLoginService.signOut();
+      _currentUser.value = null;
+      Get.offAll(LoginPage());
+    } catch (e) {
+      log('Error signing out: $e');
     }
   }
 }

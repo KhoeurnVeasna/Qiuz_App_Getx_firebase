@@ -24,7 +24,6 @@ class LoginPage extends StatelessWidget {
 
   final formKey = GlobalKey<FormState>();
   final UserController _userController = Get.find();
-  final ServiceStorage _serviceStorage = ServiceStorage();
 
   @override
   Widget build(BuildContext context) {
@@ -161,10 +160,12 @@ class LoginPage extends StatelessWidget {
                         children: [
                           iconButton(AppColor.introTxt,
                               ('assets/logos/Facebook_Logo_2023.png'), ()async {
-                                await _serviceStorage.clearIntroductionPageStatus();
+                                await ServiceStorage().clearIntroductionPageStatus();
                               }),
                           iconButton(AppColor.introTxt,
-                              'assets/logos/7611770.png', () {})
+                              'assets/logos/7611770.png', () {
+                                _userController.googleSignIn();
+                              })
                         ],
                       ),
                       SizedBox(

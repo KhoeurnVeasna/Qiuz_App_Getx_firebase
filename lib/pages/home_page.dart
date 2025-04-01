@@ -54,7 +54,15 @@ class HomePage extends StatelessWidget {
                   maxRadius: 25,
                 ),
               ),
-            )
+            ),
+            IconButton(
+              icon: const Icon(Icons.logout),
+              onPressed: () {
+                _userController.googleSignOut();
+                Get.offAllNamed('/login');
+              },
+            ),
+
           ],
         ),
       ),

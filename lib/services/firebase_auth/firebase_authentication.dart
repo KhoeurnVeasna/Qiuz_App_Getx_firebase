@@ -12,44 +12,6 @@ import '../../widgets/widget.dart';
 class FirebaseAuthentication {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  // Future<bool> login(String email, String password) async {
-  //   try {
-  //     await _auth.signInWithEmailAndPassword(email: email, password: password);
-
-  //     if (Get.isRegistered<UserController>()) {
-  //       Get.delete<UserController>();
-  //     }
-
-  //     Get.put(UserController());
-
-  //     if (!Get.isRegistered<QuizController>()) {
-  //       Get.put(QuizController());
-  //     }
-
-  //     return true;
-  //   } on FirebaseAuthException catch (e) {
-  //     log('Login failed: ${e.message}');
-  //     return false;
-  //   } catch (e) {
-  //     log('Unexpected error: $e');
-  //     return false;
-  //   }
-  // }
-  //  Future<void> logout() async {
-  //   try {
-  //     await _auth.signOut();
-  //     if (Get.isRegistered<UserController>()) {
-  //       Get.delete<UserController>();
-  //     }
-
-  //     Get.put(UserController());
-
-  //     Get.offAll(LoginPage());
-  //   } catch (e) {
-  //     log('somthing make logout wrong $e');
-  //   }
-  // }
   Future<bool> login(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
@@ -220,4 +182,5 @@ class FirebaseAuthentication {
       Navigator.pop(context);
     }
   }
+ 
 }

@@ -174,8 +174,8 @@ class RegisterPage extends StatelessWidget {
                             radius: 30,
                             backgroundColor: Colors.grey[200],
                             child: IconButton(
-                              onPressed: () {
-                                // Handle Google Sign In
+                              onPressed: ()async {
+                                  await _userController.googleSignIn();
                               },
                               icon: Image.asset('assets/logos/7611770.png',
                                   height: 30),
@@ -196,8 +196,8 @@ class RegisterPage extends StatelessWidget {
                             radius: 30,
                             backgroundColor: Colors.grey[200],
                             child: IconButton(
-                              onPressed: () {
-                                // Handle Facebook Sign In
+                              onPressed: () async{
+                              
                               },
                               icon: Image.asset(
                                   'assets/logos/Facebook_Logo_2023.png',

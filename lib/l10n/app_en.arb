@@ -14,5 +14,13 @@
   "orrigister": "or Register with",
   "areYouamem": "Are you a Member? ",
   "loginnow": "Login now",
-  "register": "Register"
+  "register": "Register",
+  "leaderbord": "Leaderbord",
+  "points": "Points",
+  "profile": "profile",
+  "setting": "Setting",
+  "process": "Process",
+  "reward": "Reward",
+  "help": "Help",
+  "loginout": "Log Out"
 }

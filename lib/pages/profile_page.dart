@@ -8,6 +8,8 @@ import 'package:quiz_project/widgets/button_submit_widget.dart';
 
 import '../services/firebase_auth/firebase_authentication.dart';
 import '../widgets/text_field_widget.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -16,28 +18,29 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final UserController userController = Get.find();
+    final AppLocalizations tran = AppLocalizations.of(context)!;
     List<Map<String, dynamic>> itemsProfile = [
       {
         'icon': Icon(
           Icons.settings,
         ),
-        'title': 'Setting',
+        'title': tran.setting,
       },
       {
         'icon': Icon(Icons.sync),
-        'title': 'Process',
+        'title': tran.process,
       },
       {
         'icon': Icon(Icons.emoji_events),
-        'title': 'Reward',
+        'title': tran.reward,
       },
       {
         'icon': Icon(Icons.help),
-        'title': 'Help',
+        'title': tran.help,
       },
       {
         'icon': Icon(Icons.logout),
-        'title': 'log out',
+        'title': tran.loginout,
       }
     ];
     return Scaffold(
@@ -47,7 +50,7 @@ class ProfilePage extends StatelessWidget {
         backgroundColor: AppColor.introBk2,
         centerTitle: true,
         title: Text(
-          'Profile page',
+          tran.profile,
           style: AppFonts.userText,
         ),
       ),
@@ -174,7 +177,7 @@ class ProfilePage extends StatelessWidget {
                         leading: itemsProfile[index]['icon'],
                         iconColor: Colors.white,
                         title: Text(
-                          itemsProfile[index]['title'],
+                          itemsProfile[index]['title'].toString(),
                           style: AppFonts.userText,
                         ),
                       ),
